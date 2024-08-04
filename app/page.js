@@ -2,7 +2,8 @@
 import Image from "next/image";
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
-import { Box, Typography, Stack, Button, Modal, TextField } from '@mui/material'
+import { SearchIcon } from '@mui/icons-material/Search'
+import { Box, IconButton, Icon, Fab, Typography, Stack, Button, Modal, TextField } from '@mui/material'
 import { collection, doc, getDocs, query, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
   }
 
   const filteredInventory = inventory.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const updateInventory = async () => {
@@ -71,14 +72,16 @@ export default function Home() {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  const displayInventory = isSearchClicked ? filteredInventory : inventory;
+
   return (
     <Box
-      width="100vw"
-      height="100vh"
+      width="100%"
+      height="100%"
       display='flex'
       flexDirection='column'
-      justifyContent='center'
       alignItems='center'
+      justifyContent='center'
       gap={2}
     >
       <Modal
@@ -120,18 +123,29 @@ export default function Home() {
         </Box>
       </Modal>
       {/* <Typography variant='h1'>Inventory Management</Typography> */}
-      <Button variant="contained" onClick={()=>{
-        handleOpen()
-      }}>Add New Item</Button>
+      <Stack direction="row">
+          <TextField
+            label="Search items..."
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <Button variant="outlined" color="primary" onClick={handleSearchClick}>
+            Search
+          </Button>
+          <Button variant="contained" onClick={()=>{
+            handleOpen()
+          }}>Add New Item</Button>
+      </Stack>
       <Box>
-        <Box width="800px" height="100px" bgcolor="#add8e6" display='flex' alignItems='center' justifyContent='center'>
+        <Box width="1000px" height="100px" bgcolor="#add8e6" display='flex' alignItems='center' justifyContent='center'>
           <Typography variant="h2" color="#333">
             Inventory Items
           </Typography>
         </Box>
-      <Stack width="800px" height="300px" spacing={2} overflow="auto">
+      <Stack width="1000px" height="600px" spacing={2} overflow="auto">
         {
-          inventory.map(({name, quantity}) => (
+          displayInventory.map(({name, quantity}) => (
             <Box
               key={name}
               width="100%"
