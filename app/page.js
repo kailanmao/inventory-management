@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
 import { SearchIcon } from '@mui/icons-material/Search'
-import { Box, IconButton, Icon, Fab, Typography, Stack, Button, Modal, TextField } from '@mui/material'
+import { Box, Table, TableContainer, TableBody, TableCell, TableHead, TableRow, IconButton, Icon, Fab, Typography, Stack, Button, Modal, TextField } from '@mui/material'
 import { collection, doc, getDocs, query, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
 
 export default function Home() {
@@ -77,13 +77,19 @@ export default function Home() {
   return (
     <Box
       width="100%"
-      height="100%"
+      height="1000px"
       display='flex'
       flexDirection='column'
       alignItems='center'
       justifyContent='center'
       gap={2}
+      bgcolor="#D7F5FF"
     >
+      <Box width="1000px" height="100px" bgcolor="#006494" display='flex' alignItems='center' justifyContent='center'>
+        <Typography variant="h2" color="white">
+          Pantry Tracker
+        </Typography>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}
@@ -138,12 +144,46 @@ export default function Home() {
           }}>Add New Item</Button>
       </Stack>
       <Box>
-        <Box width="1000px" height="100px" bgcolor="#add8e6" display='flex' alignItems='center' justifyContent='center'>
-          <Typography variant="h2" color="#333">
+        <Box width="1000px" height="100px" bgcolor="#65B6DC" display='flex' alignItems='center' justifyContent='center'>
+          <Typography variant="h2" color="#006494">
             Inventory Items
           </Typography>
         </Box>
-      <Stack width="1000px" height="600px" spacing={2} overflow="auto">
+        <TableContainer sx={{maxHeight: '400px', overflow: 'auto'}}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell><Typography variant="h5">Item</Typography></TableCell>
+              <TableCell><Typography variant="h5">Quantity</Typography></TableCell>
+              <TableCell><Typography variant="h5">Actions</Typography></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+            {
+              displayInventory.map(({name, quantity}) => (
+                <TableRow key={name}>
+                  <TableCell>{name.charAt(0).toUpperCase() + name.slice(1)}</TableCell>
+                  <TableCell>{quantity}</TableCell>
+                  <TableCell>
+                    <Button padding={1} variant="contained" onClick={() => {
+                      addItem(name)
+                    }}>Add</Button>
+                    <Button padding={1} variant="outlined" onClick={() => {
+                      removeItem(name)
+                    }}>Remove</Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
+        </TableContainer>
+      {/* <Stack width="1000px" height="600px" spacing={2} overflow="auto">
         {
           displayInventory.map(({name, quantity}) => (
             <Box
@@ -173,7 +213,7 @@ export default function Home() {
             </Box>
           ))
         }
-      </Stack>
+      </Stack> */}
       </Box>
     </Box>
   );
